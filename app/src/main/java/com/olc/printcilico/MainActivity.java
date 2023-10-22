@@ -81,19 +81,21 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             ImageButton helpButton = (ImageButton) findViewById(R.id.btn_help);
             helpButton.setOnClickListener(this);
             TabPageIndicator tabPageIndicator = (TabPageIndicator) findViewById(R.id.indicator);
-            mViewPager = (ViewPager) findViewById(R.id.viewpager);
-            mFragmentList = new ArrayList<>();
-            mFragmentList.add(new PrintCheckFragment());
-//            mFragmentList.add(new ScanPrintFragment());
-//            mFragmentList.add(new PrintImageFragment());
-//            mFragmentList.add(new WebPrintFragment());
-            mMyFrageStatePagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), mFragmentList);
-            mViewPager.setAdapter(mMyFrageStatePagerAdapter);
-            tabPageIndicator.setViewPager(mViewPager);
-            mViewPager.setCurrentItem(1);
 
             Bundle bundle = getIntent().getExtras();
             processBundle(bundle);
+
+            mViewPager = (ViewPager) findViewById(R.id.viewpager);
+            mFragmentList = new ArrayList<>();
+            PrintCheckFragment printCheckFragment = new PrintCheckFragment();
+            printCheckFragment.fname = fname;
+            printCheckFragment.copies = copies;
+            mFragmentList.add(printCheckFragment);
+            mMyFrageStatePagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), mFragmentList);
+
+            mViewPager.setAdapter(mMyFrageStatePagerAdapter);
+            tabPageIndicator.setViewPager(mViewPager);
+            mViewPager.setCurrentItem(1);
 
         } catch (Exception e) {
             showException(e);
@@ -128,157 +130,10 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         if (fname.isEmpty()) fname=Environment.getExternalStorageDirectory()+"/lectura.txt";
 
     }
-    private void runPrint(){
-
-        try {
-
-            int rslt;
-
-            rslt= printFile();
-
-            if (rslt==1) {
-                endSession();
-            } else if (rslt==-1) {
-                Handler mtimer = new Handler();
-                Runnable mrunner= () -> endSession();
-                mtimer.postDelayed(mrunner,200);
-            } else if (rslt==0) {
-                endSession();
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    private int printFile() {
-
-        try {
-            file1 = new File(fname);
-            ffile = new File(file1.getPath());
-        } catch (Exception e) {
-            ShowMsg.showMsg("No se puede leer archivo de impresión", mContext);
-            return -1;
-        }
-
-        initPrinter();
-
-        if (!createPrintData()) {
-            return 0;
-        }
-
-        try {
-            //file1.delete();
-        } catch (Exception e) {
-        }
-
-        return 1;
-    }
-    public void initPrinter() {
-        String str = "isPaper: N/A      isOverTemper: N/A";
-        try {
-            printHelper = new PrintHelper();
-            int result =  printHelper.Open(mContext);
-            if (result == 0) {
-                str = getResources().getString(R.string.printer_opened);
-            } else {
-                str = getString(R.string.printer_opene_fail);
-            }
-            toast(str);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-    private StringObject generateStringObject(String content, int textSize, int x, int y, boolean blod, PrintHelper.PrintType direct) {
-        StringObject object = new StringObject();
-        object.content = content;
-        object.textSize = textSize;
-        object.x = x;
-        object.y = y;
-        object.blod = blod;
-        object.direct = direct;
-        return object;
-    }
-    private void endSession() {
-
-        try {
-
-//            if (copies>0) {
-//                toast("Imprimiendo . . . ");
-//                Handler mtimer = new Handler();
-//                Runnable mrunner= () -> restart();
-//                mtimer.postDelayed(mrunner,5000);
-//            }
-//
-//            finish();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     public void toast(String msg) {
         Toast toast= Toast.makeText(mContext,msg,Toast.LENGTH_LONG);
         toast.setGravity(Gravity.CENTER, 0, 0);
         toast.show();
-    }
-
-    private boolean createPrintData() {
-
-        try {
-
-            ffile = new File(file1.getPath());
-        } catch (Exception e) {
-            ShowMsg.showMsg("No se puede leer archivo de impresión", mContext);return false;
-        }
-
-        BufferedReader dfile = null;
-        StringBuilder textData = new StringBuilder();
-        String linea_archivo_texto;
-
-        try {
-            FileInputStream fIn = new FileInputStream(ffile);
-            dfile = new BufferedReader(new InputStreamReader(fIn));
-        } catch (Exception e) {
-            ShowMsg.showMsg("No se puede leer archivo de impresión " + e.getMessage(), mContext); return false;
-        }
-
-        try {
-
-            int is_ready = printHelper.IsReady();
-
-            if (is_ready==0){
-
-                printHelper.SetGrayLevel((byte) 0x05);
-                printHelper.PrintStringEx(mTitleStr, mTitleTextSize, false, titleBold, mTitleType);
-
-                while ((linea_archivo_texto = dfile.readLine()) != null) {
-                    textData.append(linea_archivo_texto).append("\n");
-                    printHelper.PrintLineInit(mLineTextSize);
-                    printHelper.PrintLineStringByType(linea_archivo_texto, mLineTextSize, PrintHelper.PrintType.Left, false);
-                    printHelper.PrintLineEnd();
-                }
-
-                printHelper.PrintLineInit(40);
-                printHelper.PrintLineStringByType("", mKeyTextSize, PrintHelper.PrintType.Right, true);//160
-                printHelper.PrintLineEnd();
-                printHelper.printBlankLine(40);
-
-            }
-
-            try {
-                dfile.close();
-                printHelper.Close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            copies--;
-
-        } catch (Exception e) {
-            showException(e);return false;
-        }
-
-        return true;
     }
 
     public void showException(Exception e) {

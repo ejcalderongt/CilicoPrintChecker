@@ -1,9 +1,5 @@
 package com.olc.printcilico;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -12,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -31,15 +26,16 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import hardware.print.BarcodeUtil;
 import Printer.PrintHelper;
 import Printer.PrintHelper.PrintType;
+import hardware.print.BarcodeUtil;
 
 /************************************************************
  * Copyright 2000-2066 Olc Corp., Ltd.

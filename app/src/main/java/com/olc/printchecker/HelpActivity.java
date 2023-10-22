@@ -1,4 +1,4 @@
-package com.olc.printchecker;
+package com.olc.printcilico;
 
 import android.app.Activity;
 import android.os.Bundle;

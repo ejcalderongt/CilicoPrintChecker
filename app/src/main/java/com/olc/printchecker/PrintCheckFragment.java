@@ -1,4 +1,4 @@
-package com.olc.printchecker;
+package com.olc.printcilico;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

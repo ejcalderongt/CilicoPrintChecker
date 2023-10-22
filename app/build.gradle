@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 30
     defaultConfig {
-        applicationId "com.olc.printchecker"
+        applicationId "com.olc.printcilico"
         minSdkVersion 21
         targetSdkVersion 30
         versionCode 23
@@ -30,7 +30,7 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    namespace 'com.olc.printchecker'
+    namespace 'com.olc.printcilico'
 }
 
 dependencies {

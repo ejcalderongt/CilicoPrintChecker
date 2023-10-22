@@ -1,4 +1,4 @@
-package com.olc.printchecker;
+package com.olc.printcilico;
 
 import android.Manifest;
 import android.annotation.SuppressLint;

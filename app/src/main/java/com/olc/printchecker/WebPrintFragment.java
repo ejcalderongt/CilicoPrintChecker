@@ -1,4 +1,4 @@
-package com.olc.printchecker;
+package com.olc.printcilico;
 
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;

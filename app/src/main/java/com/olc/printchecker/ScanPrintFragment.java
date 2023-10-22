@@ -1,4 +1,4 @@
-package com.olc.printchecker;
+package com.olc.printcilico;
 
 import android.graphics.Bitmap;
 import android.graphics.Typeface;

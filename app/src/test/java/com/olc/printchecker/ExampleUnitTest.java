@@ -1,4 +1,4 @@
-package com.olc.printchecker.myapplication;
+package com.olc.printcilico.myapplication;
 
 import org.junit.Test;
 

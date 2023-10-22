@@ -31,7 +31,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 
-import com.olc.printchecker.R;
+import com.olc.printcilico.R;
 
 
 /**

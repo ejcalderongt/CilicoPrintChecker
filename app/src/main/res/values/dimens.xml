@@ -1,0 +1,16 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="paper_size">464px</dimen>
+    <!-- (58,58),(48*48)  -> (50,50),(41,41)
+        so do scale when draw, then leed height relativity increase
+         (48-41=7) 7*1.16=8.12  8.12*8=64
+            384+64=448  -->
+    <dimen name="paper_size_small">400px</dimen>
+    <dimen name="paper_content_size">384px</dimen>
+    <dimen name="paper_space">8px</dimen>
+    <dimen name="card_redius">6dip</dimen>
+    <dimen name="card_elevation">8dip</dimen>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+</resources>

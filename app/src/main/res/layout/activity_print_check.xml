@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:id="@+id/lyt_advance"
+        android:layout_width="130dip"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="10dip"
+        android:layout_marginTop="30dip"
+        android:minWidth="50dip">
+
+        <LinearLayout
+            android:id="@+id/lyt_blod"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="13dip"
+                android:textColor="#000000"
+                android:text="@string/bold" />
+
+            <CheckBox
+                android:id="@+id/cb_blod"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="43dip" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/lyt_textsize"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="20dip">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="13dip"
+                android:textColor="#000000"
+                android:text="@string/textsize" />
+
+            <Spinner
+                android:id="@+id/spinner_textsize"
+                android:layout_width="57dip"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="23dip" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/lyt_align"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dip">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="13dip"
+                android:textColor="#000000"
+                android:text="@string/gravity" />
+
+            <Spinner
+                android:id="@+id/spinner_align"
+                android:layout_width="87dip"
+                android:layout_height="wrap_content"
+                android:textSize="13dip" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/lyt_gray"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="20dip"
+            android:layout_centerHorizontal="true">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/graylevel"
+                android:textColor="#000000"
+                android:textSize="13dip" />
+
+            <Spinner
+                android:id="@+id/spinner"
+                android:layout_width="57dp"
+                android:layout_height="wrap_content"
+                android:textSize="13dip"
+                android:gravity="center" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/lyt_toggle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dip">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="13dip"
+                android:textColor="#000000"
+                android:text="@string/toggle" />
+
+            <Switch
+                android:id="@+id/toggleButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:textOn="@string/close"
+                android:textOff="@string/open"
+                android:layout_marginLeft="23dip" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/lyt_card"
+        android:layout_width="@dimen/paper_size_small"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="#ededed"
+        android:paddingTop="8px"
+        android:paddingBottom="8px"
+        android:layout_marginTop="30dip"
+        android:gravity="center_horizontal"
+        android:layout_below="@+id/toolbar"
+        android:layout_centerHorizontal="true"
+        android:layout_toLeftOf="@+id/lyt_advance">
+        <!-- 464-40-40 = 384 -->
+        <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:layout_width="@dimen/paper_content_size"
+            android:layout_height="wrap_content"
+            card_view:cardCornerRadius="@dimen/card_redius"
+            card_view:cardElevation="@dimen/card_elevation"
+            android:layout_marginBottom="@dimen/paper_space"
+            android:background="#ffffff">
+
+            <LinearLayout
+                android:id="@+id/lyt_card1_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_y="0px"
+                android:orientation="vertical"></LinearLayout>
+        </android.support.v7.widget.CardView>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/lyt_control"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="30dip">
+
+        <Button
+            android:id="@+id/btn_print"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/print"
+            android:textColor="@drawable/button_text_color"
+            android:layout_centerVertical="true"
+            android:enabled="false" />
+
+        <Button
+            android:id="@+id/btn_step"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/step"
+            android:textColor="@drawable/button_text_color"
+            android:layout_marginLeft="50dip"
+            android:layout_toRightOf="@+id/btn_print"
+            android:layout_centerVertical="true"
+            android:enabled="false" />
+
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:id="@+id/lyt_setting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dip"
+        android:layout_above="@+id/lyt_control">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="13dip"
+            android:textColor="#000000"
+            android:text="@string/advance" />
+
+        <CheckBox
+            android:id="@+id/cb_setting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3dip" />
+
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/tv_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:textColor="#000000"
+        android:textSize="13dip"
+        android:layout_marginBottom="10dip"
+        android:layout_above="@+id/lyt_setting"
+        android:layout_marginTop="20dip" />
+
+</RelativeLayout>

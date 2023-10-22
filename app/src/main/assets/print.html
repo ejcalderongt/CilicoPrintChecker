@@ -1,0 +1,155 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta name="viewport"
+          content="width=device-width, height=device-height initial-scale=1.0, minimum-scale=0.5, maximum-scale=2.0, user-scalable=yes"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>1小时达</title>
+    <style>
+	.bodyStyle{
+		word-wrap:break-word;
+		font-family:Arial;
+	}
+.home{
+	margin-left: auto;
+	margin-right: auto;
+	width:280px;
+	height: 280px;
+}
+.title{
+	margin-left: auto;
+	margin-right: auto;
+	text-align:center;
+
+}
+.order{
+	margin-left: auto;
+	margin-right: auto;
+	width:280px;
+}
+.table{
+	margin-left: auto;
+	margin-right: auto;
+	width:280px;
+}
+.line{
+	margin-left: auto;
+	margin-right: auto;
+	width:260px;
+	border-top:1px dashed #cccccc;
+	height: 1px;
+	overflow:hidden
+}
+.prodtableli{
+	float:left;
+	width:140px;
+	list-style:none outside;
+	text-align:left;
+}
+.table div{
+	float:left;
+}
+.left{
+	width:60px;
+}
+.right{
+	width:60px;
+}
+.addresstableli{
+	float:left;
+	width:280px;
+	list-style:none outside;
+	text-align:left;
+}
+.addressleft{
+	width:88px;
+}
+.addressright{
+	width:180px;
+}
+
+    </style>
+</head>
+<script type="text/javascript">
+function scanprint(){
+    var datalistdiv = document.getElementById("home");
+    window.connect.print(datalistdiv.offsetLeft, datalistdiv.offsetTop, datalistdiv.offsetWidth, datalistdiv.offsetHeight);
+}
+function feed(){
+	window.connect.doFeed();
+}
+
+</script>
+<body class="bodyStyle">
+<div>
+    <h3 align="center">网页调用打印</h3>
+</div>
+<div class="home" id="home">
+    <div class="title">感谢您光临XSJ</div>
+    <div class="order">订单号：123456</div>
+    <div class="table" id="title">
+        <li class="prodtableli">
+            <div class="left">商品</div>
+            <div class="right">数量</div>
+        </li>
+        <li class="prodtableli">
+            <div class="left">单价</div>
+            <div class="right">金额</div>
+        </li>
+    </div>
+    <div class="line"></div>
+    <div class="table">
+        <li class="prodtableli">
+            <div class="left">西红柿</div>
+            <div class="right">1</div>
+        </li>
+        <li class="prodtableli">
+            <div class="left">￥2.00</div>
+            <div class="right">￥2.00</div>
+        </li>
+        <li class="prodtableli">
+            <div class="left">黄瓜</div>
+            <div class="right">2</div>
+        </li>
+        <li class="prodtableli">
+            <div class="left">￥1.50</div>
+            <div class="right">￥3.00</div>
+        </li>
+    </div>
+    <div class="line"></div>
+
+    <div class="table">
+        <li class="prodtableli">
+            <div class="left">应付</div>
+            <div class="right"></div>
+        </li>
+        <li class="prodtableli">
+            <div class="left">&nbsp;</div>
+            <div class="right">￥5.00</div>
+        </li>
+    </div>
+    <div class="table">
+        <li class="addresstableli">
+            <div class="addressleft">收货人：</div>
+            <div class="addressright">张女士</div>
+        </li>
+        <li class="addresstableli">
+            <div class="addressleft">收货地址：</div>
+            <div class="addressright">东旭公寓XX楼XX01</div>
+        </li>
+        <li class="addresstableli">
+            <div class="addressleft">联系电话：</div>
+            <div class="addressright">13012341234</div>
+        </li>
+    </div>
+
+</div>
+
+<div class="table">
+    <input type=button style="margin-left:50px" value="打印" onclick="scanprint()"/>
+    <input type=button style="margin-left:50px" value="走纸" onclick="feed()"/>
+</div>
+
+</body>
+</html> 

@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=0.5, maximum-scale=2.0, user-scalable=yes"/>
+    <title>网页打印</title>
+    <style>
+.ts{
+	text-align:center	
+}
+.bn{
+	with:50
+}
+
+
+    </style>
+    <script type="text/javascript">
+    function printText(){
+        var myVal= document.getElementById("text").value;
+        window.connect.doPrint(myVal);
+    }
+    function printImage(){
+        var myVal= document.getElementById("image").src;
+        window.connect.doPrintImage(myVal);
+    }
+
+    </script>
+</head>
+
+<body>
+<h3 class="ts">网页调用打印</h3>
+<p align="center">
+    <input id="text" type="text" value="test"/>
+    <input type="button" style="width:65px;height:30px;" value="打印文本" onclick="printText()"/>
+</p>
+<p align="center">
+    <img id="image" src="iot.jpg"/>
+</p>
+<p align="center">
+    <input type="button" align="center" style="width:65px;height:30px;" value="打印图片"
+           onclick="printImage()"/>
+</p>
+</body>
+</html>
+

@@ -95,12 +95,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             Bundle bundle = getIntent().getExtras();
             processBundle(bundle);
 
-            if (fname.isEmpty())    fname=Environment.getExternalStorageDirectory().getAbsolutePath()+"/lectura.txt";
-
-            Handler mtimer = new Handler();
-            Runnable mrunner= this::runPrint;
-            mtimer.postDelayed(mrunner,500);
-
         } catch (Exception e) {
             showException(e);
         }

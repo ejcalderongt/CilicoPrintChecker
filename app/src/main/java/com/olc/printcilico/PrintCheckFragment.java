@@ -1,9 +1,12 @@
 package com.olc.printcilico;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -30,6 +33,11 @@ import android.widget.Toast;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -84,7 +92,11 @@ public class PrintCheckFragment extends Fragment implements View.OnClickListener
     private View mGrayView;
     private View mToogleView;
     private View mView;
-
+    private String fname="";
+    private File file1;
+    private File ffile;
+    private int copies=1;
+    private Context mContext = null;
     public PrintCheckFragment() {
 
     }
@@ -94,18 +106,158 @@ public class PrintCheckFragment extends Fragment implements View.OnClickListener
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.activity_print_check, container, false);
         mCardWidth = getResources().getDimension(R.dimen.paper_content_size);
+        mContext = getActivity().getApplicationContext();
         initView();
         initData();
         initPrinter();
 
+        if (fname.isEmpty())    fname= Environment.getExternalStorageDirectory().getAbsolutePath()+"/lectura.txt";
+
+        Handler mtimer = new Handler();
+        Runnable mrunner= this::runPrint;
+        mtimer.postDelayed(mrunner,500);
+
         return mView;
     }
 
+    private void runPrint(){
+
+        try {
+
+            int rslt;
+
+            rslt= printFile();
+
+            if (rslt==1) {
+                endSession();
+            } else if (rslt==-1) {
+                Handler mtimer = new Handler();
+                Runnable mrunner= () -> endSession();
+                mtimer.postDelayed(mrunner,200);
+            } else if (rslt==0) {
+                endSession();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void endSession() {
+
+        try {
+
+//            if (copies>0) {
+//                toast("Imprimiendo . . . ");
+//                Handler mtimer = new Handler();
+//                Runnable mrunner= () -> restart();
+//                mtimer.postDelayed(mrunner,5000);
+//            }
+//
+//            finish();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    private int printFile() {
+
+        try {
+            file1 = new File(fname);
+            ffile = new File(file1.getPath());
+        } catch (Exception e) {
+            ShowMsg.showMsg("No se puede leer archivo de impresión", mContext);
+            return -1;
+        }
+
+        if (!createPrintData()) {
+            return 0;
+        }
+
+        try {
+            //file1.delete();
+        } catch (Exception e) {
+        }
+
+        return 1;
+    }
     public void initPrinter() {
         printHelper = new PrintHelper();
         printHelper.Open(getActivity().getApplication());
     }
+    private boolean createPrintData() {
 
+        try {
+
+            ffile = new File(file1.getPath());
+        } catch (Exception e) {
+            ShowMsg.showMsg("No se puede leer archivo de impresión", mContext);return false;
+        }
+
+        BufferedReader dfile = null;
+        StringBuilder textData = new StringBuilder();
+        String linea_archivo_texto;
+
+        try {
+            FileInputStream fIn = new FileInputStream(ffile);
+            dfile = new BufferedReader(new InputStreamReader(fIn));
+        } catch (Exception e) {
+            ShowMsg.showMsg("No se puede leer archivo de impresión " + e.getMessage(), mContext); return false;
+        }
+
+        try {
+
+            int is_ready = printHelper.IsReady();
+
+            if (is_ready==0){
+
+                printHelper.SetGrayLevel((byte) 0x05);
+                printHelper.PrintStringEx(mTitleStr, mTitleTextSize, false, titleBold, mTitleType);
+
+                while ((linea_archivo_texto = dfile.readLine()) != null) {
+                    textData.append(linea_archivo_texto).append("\n");
+                    printHelper.PrintLineInit(mLineTextSize);
+                    printHelper.PrintLineStringByType(linea_archivo_texto, mLineTextSize, PrintHelper.PrintType.Left, false);
+                    printHelper.PrintLineEnd();
+                }
+
+                printHelper.PrintLineInit(40);
+                printHelper.PrintLineStringByType("", mKeyTextSize, PrintHelper.PrintType.Right, true);//160
+                printHelper.PrintLineEnd();
+                printHelper.printBlankLine(40);
+
+            }
+
+            try {
+                dfile.close();
+                printHelper.Close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            copies--;
+
+        } catch (Exception e) {
+            showException(e);return false;
+        }
+
+        return true;
+    }
+
+    public void showException(Exception e) {
+        try {
+            String msg;
+            msg = e.toString();
+            toast(msg);
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+    public void toast(String msg) {
+        Toast toast= Toast.makeText(mContext,msg,Toast.LENGTH_LONG);
+        toast.setGravity(Gravity.CENTER, 0, 0);
+        toast.show();
+    }
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -215,6 +367,8 @@ public class PrintCheckFragment extends Fragment implements View.OnClickListener
     }
 
     private void initView() {
+
+
         mCard1ContentLayout = (LinearLayout) mView.findViewById(R.id.lyt_card1_content);
         mStatusTextView = (TextView) mView.findViewById(R.id.tv_status);
         mPrintButton = (Button) mView.findViewById(R.id.btn_print);

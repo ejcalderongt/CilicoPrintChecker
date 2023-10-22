@@ -1,0 +1,21 @@
+     Lectura 
+
+Empresa Eléctrica
+San Pedro Pinula
+NIT: 112388302
+Dirección: Barrio San Pedro 
+San Pedro Pinula Jalapa 
+
+Fecha: 21-10-2023
+Ruta: 1
+Itinerario: 1
+Técnico: Raquel Recinos
+
+Usuario: 25-Anderly Teleguario
+Lectura anterior: 2523 KW
+Lectura actual:   2548 KW
+Consumo:            25 KW
+
+
+
+

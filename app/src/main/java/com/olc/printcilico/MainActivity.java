@@ -2,10 +2,13 @@ package com.olc.printcilico;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -13,9 +16,16 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import Printer.PrintHelper;
@@ -28,87 +38,285 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private MyFragmentPagerAdapter mMyFrageStatePagerAdapter;
     private static boolean isOutPaper = false;
     PrintHelper mPrinterhelp = new PrintHelper();
-
+    private File file1;
+    private File ffile;
+    private int copies=1;
+    private String fname="";
+    private Context mContext = null;
+    private PrintHelper.PrintType mTitleType = PrintHelper.PrintType.Centering;
+    private boolean titleBold = true;
+    private int mTitleTextSize = 40;
+    private int mLineTextSize = 18;
+    private int mValueTextSize = 20;
+    private int mKeyTextSize = 24;
+    private String mTitleStr = "Registro de lectura";
+    private int mOffsetX = 210;
+    PrintHelper printHelper = null;
     @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            // 申请权限
-            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 10000);
+        mContext = this;
 
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 10000);
+        }
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 20000);
         }
 
-        mTabArrays = new String[]
-                {getResources().getString(R.string.check_title),
-                        getResources().getString(R.string.scan_title),
-                        getResources().getString(R.string.print_images),
-                        getResources().getString(R.string.web_title)
-                };
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("PrintChecker");
-        toolbar.setTitleTextColor(Color.WHITE);
-        ImageButton helpButton = (ImageButton) findViewById(R.id.btn_help);
-        helpButton.setOnClickListener(this);
-        TabPageIndicator tabPageIndicator = (TabPageIndicator) findViewById(R.id.indicator);
-        mViewPager = (ViewPager) findViewById(R.id.viewpager);
-        mFragmentList = new ArrayList<Fragment>();
-        mFragmentList.add(new PrintCheckFragment());
-        mFragmentList.add(new ScanPrintFragment());
-        mFragmentList.add(new PrintImageFragment());
-        mFragmentList.add(new WebPrintFragment());
-        mMyFrageStatePagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), mFragmentList);
-        mViewPager.setAdapter(mMyFrageStatePagerAdapter);
-        tabPageIndicator.setViewPager(mViewPager);
-        mViewPager.setCurrentItem(1);
+        try {
 
-        // 设备缺纸检测 (医慧科技)
-//        IntentFilter filter = new IntentFilter();
-//        filter.addAction("com.printer.printerror");
-//        registerReceiver(receiver, filter);
-//        Log.i("PrintStater", "注册广播");
+            mTabArrays = new String[]
+                    {getResources().getString(R.string.check_title),
+                            getResources().getString(R.string.scan_title),
+                            getResources().getString(R.string.print_images),
+                            getResources().getString(R.string.web_title)
+                    };
+            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+            toolbar.setTitle("PrinterDriver");
+            toolbar.setTitleTextColor(Color.WHITE);
+            ImageButton helpButton = (ImageButton) findViewById(R.id.btn_help);
+            helpButton.setOnClickListener(this);
+            TabPageIndicator tabPageIndicator = (TabPageIndicator) findViewById(R.id.indicator);
+            mViewPager = (ViewPager) findViewById(R.id.viewpager);
+            mFragmentList = new ArrayList<>();
+            mFragmentList.add(new PrintCheckFragment());
+//            mFragmentList.add(new ScanPrintFragment());
+//            mFragmentList.add(new PrintImageFragment());
+//            mFragmentList.add(new WebPrintFragment());
+            mMyFrageStatePagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), mFragmentList);
+            mViewPager.setAdapter(mMyFrageStatePagerAdapter);
+            tabPageIndicator.setViewPager(mViewPager);
+            mViewPager.setCurrentItem(1);
+
+            Bundle bundle = getIntent().getExtras();
+            processBundle(bundle);
+
+            if (fname.isEmpty())    fname=Environment.getExternalStorageDirectory().getAbsolutePath()+"/lectura.txt";
+
+            Handler mtimer = new Handler();
+            Runnable mrunner= this::runPrint;
+            mtimer.postDelayed(mrunner,500);
+
+        } catch (Exception e) {
+            showException(e);
+        }
+    }
+
+    private void processBundle(Bundle b) {
+
+        String flog= Environment.getExternalStorageDirectory()+"/loglectura.txt";
+        String ss="";
+        String lf="\r\n";
+
+        try {
+
+            try {
+                fname=b.getString("fname");ss=fname;
+            } catch (Exception e) {
+                fname="";ss=e.getMessage();
+            }
+
+            try {
+                copies=b.getInt("copies");ss=""+copies;
+            } catch (Exception e) {
+                copies=1;ss=e.getMessage();
+            }
+
+        } catch (Exception e) {
+            fname="";ss="ERR : "+e.getMessage();
+            toast("err4 : "+ss);
+        }
+
+        if (fname.isEmpty()) fname=Environment.getExternalStorageDirectory()+"/lectura.txt";
+
+    }
+    private void runPrint(){
+
+        try {
+
+            int rslt;
+
+            rslt= printFile();
+
+            if (rslt==1) {
+                endSession();
+            } else if (rslt==-1) {
+                Handler mtimer = new Handler();
+                Runnable mrunner= () -> endSession();
+                mtimer.postDelayed(mrunner,200);
+            } else if (rslt==0) {
+                endSession();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    private int printFile() {
+
+        try {
+            file1 = new File(fname);
+            ffile = new File(file1.getPath());
+        } catch (Exception e) {
+            ShowMsg.showMsg("No se puede leer archivo de impresión", mContext);
+            return -1;
+        }
+
+        initPrinter();
+
+        if (!createPrintData()) {
+            return 0;
+        }
+
+        try {
+            //file1.delete();
+        } catch (Exception e) {
+        }
+
+        return 1;
+    }
+    public void initPrinter() {
+        String str = "isPaper: N/A      isOverTemper: N/A";
+        try {
+            printHelper = new PrintHelper();
+            int result =  printHelper.Open(mContext);
+            if (result == 0) {
+                str = getResources().getString(R.string.printer_opened);
+            } else {
+                str = getString(R.string.printer_opene_fail);
+            }
+            toast(str);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    private StringObject generateStringObject(String content, int textSize, int x, int y, boolean blod, PrintHelper.PrintType direct) {
+        StringObject object = new StringObject();
+        object.content = content;
+        object.textSize = textSize;
+        object.x = x;
+        object.y = y;
+        object.blod = blod;
+        object.direct = direct;
+        return object;
+    }
+    private void endSession() {
+
+        try {
+
+//            if (copies>0) {
+//                toast("Imprimiendo . . . ");
+//                Handler mtimer = new Handler();
+//                Runnable mrunner= () -> restart();
+//                mtimer.postDelayed(mrunner,5000);
+//            }
+//
+//            finish();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void toast(String msg) {
+        Toast toast= Toast.makeText(mContext,msg,Toast.LENGTH_LONG);
+        toast.setGravity(Gravity.CENTER, 0, 0);
+        toast.show();
+    }
+
+    private boolean createPrintData() {
+
+        try {
+
+            ffile = new File(file1.getPath());
+        } catch (Exception e) {
+            ShowMsg.showMsg("No se puede leer archivo de impresión", mContext);return false;
+        }
+
+        BufferedReader dfile = null;
+        StringBuilder textData = new StringBuilder();
+        String linea_archivo_texto;
+
+        try {
+            FileInputStream fIn = new FileInputStream(ffile);
+            dfile = new BufferedReader(new InputStreamReader(fIn));
+        } catch (Exception e) {
+            ShowMsg.showMsg("No se puede leer archivo de impresión " + e.getMessage(), mContext); return false;
+        }
+
+        try {
+
+            int is_ready = printHelper.IsReady();
+
+            if (is_ready==0){
+
+                printHelper.SetGrayLevel((byte) 0x05);
+                printHelper.PrintStringEx(mTitleStr, mTitleTextSize, false, titleBold, mTitleType);
+
+                while ((linea_archivo_texto = dfile.readLine()) != null) {
+                    textData.append(linea_archivo_texto).append("\n");
+                    printHelper.PrintLineInit(mLineTextSize);
+                    printHelper.PrintLineStringByType(linea_archivo_texto, mLineTextSize, PrintHelper.PrintType.Left, false);
+                    printHelper.PrintLineEnd();
+                }
+
+                printHelper.PrintLineInit(40);
+                printHelper.PrintLineStringByType("", mKeyTextSize, PrintHelper.PrintType.Right, true);//160
+                printHelper.PrintLineEnd();
+                printHelper.printBlankLine(40);
+
+            }
+
+            try {
+                dfile.close();
+                printHelper.Close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            copies--;
+
+        } catch (Exception e) {
+            showException(e);return false;
+        }
+
+        return true;
+    }
+
+    public void showException(Exception e) {
+        try {
+            String msg;
+            msg = e.toString();
+            toast(msg);
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         mPrinterhelp.Open(this);
-
-        // 缺纸检测
-//        mPrinterhelp.getPageStatus();
     }
 
-    // 缺纸检测广播
-    /*private BroadcastReceiver receiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Log.i("PrintStater", "收到广播");
-            String action = intent.getAction();
-            String printerror = intent.getStringExtra("printerror");
-            Log.i("PrintStater", "action" + action);
-            if ("paper".equals(printerror)) {
-                Log.i("PrintStater", "paper");
-                // Toast.makeText(MainActivity.this, "paper", Toast.LENGTH_SHORT).show();
-            } else if ("nopaper".equals(printerror)) {
-                Log.i("PrintStater", "nopaper");
-                Toast.makeText(MainActivity.this, "缺纸 nopaper", Toast.LENGTH_SHORT).show();
-            } else if ("ready".equals(printerror)) {
-                Log.i("PrintStater", "ready");
-                // Toast.makeText(MainActivity.this, "ready", Toast.LENGTH_SHORT).show();
-            } else if ("printing".equals(printerror)) {
-                Log.i("PrintStater", "printing");
-                // Toast.makeText(MainActivity.this, "printing", Toast.LENGTH_SHORT).show();
-            } else if ("busy".equals(printerror)) {
-                Log.i("PrintStater", "busy");
-                // Toast.makeText(MainActivity.this, "busy", Toast.LENGTH_SHORT).show();
-            } else if ("finish".equals(printerror)) {
-                Log.i("PrintStater", "finish");
-                // Toast.makeText(MainActivity.this, "finish", Toast.LENGTH_SHORT).show();
-            }
+    private void restart() {
+
+        try {
+
+            Intent intent = this.getPackageManager().getLaunchIntentForPackage("com.olc.printcilico");
+            intent.putExtra("fname", Environment.getExternalStorageDirectory()+"/lectura.txt");
+            intent.putExtra("askprint",1);
+            intent.putExtra("copies",copies);
+            this.startActivity(intent);
+
+        } catch (Exception e) {
+            toast("Pendiente impresión :\n"+e.getMessage());
         }
-    };*/
+    }
 
     @Override
     public void onClick(View v) {
@@ -148,4 +356,5 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             return super.getPageWidth(position);
         }
     }
+
 }

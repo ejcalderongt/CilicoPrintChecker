@@ -111,7 +111,7 @@ public class PrintCheckFragment extends Fragment implements View.OnClickListener
         super.onActivityCreated(savedInstanceState);
 
         String[] strAct = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"};
-        ArrayAdapter mAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, strAct);
+        ArrayAdapter mAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, strAct);
         mAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
         mSpinner.setAdapter(mAdapter);
         printHelper.SetGrayLevel((byte) 0x05);
@@ -175,27 +175,21 @@ public class PrintCheckFragment extends Fragment implements View.OnClickListener
         });
 
         mBoldCheckbox.setChecked(true);
-        mBoldCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    titleBold = true;
-                } else {
-                    titleBold = false;
-                }
-                mEditText.getPaint().setFakeBoldText(titleBold);
+        mBoldCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                titleBold = true;
+            } else {
+                titleBold = false;
             }
+            mEditText.getPaint().setFakeBoldText(titleBold);
         });
 
         mAdvanceCheckbox.setChecked(false);
-        mAdvanceCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    controlViewStatus(true);
-                } else {
-                    controlViewStatus(false);
-                }
+        mAdvanceCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                controlViewStatus(true);
+            } else {
+                controlViewStatus(false);
             }
         });
 
@@ -283,6 +277,7 @@ public class PrintCheckFragment extends Fragment implements View.OnClickListener
     }
 
     private void initData() {
+
         mDataList.clear();
         String spiltStr = "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~";
         List<StringObject> mLine1List = new ArrayList<StringObject>();

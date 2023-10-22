@@ -1,11 +1,11 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 28
     defaultConfig {
         applicationId "com.olc.printcilico"
         minSdkVersion 21
-        targetSdkVersion 30
+        targetSdkVersion 28
         versionCode 23
         versionName "23.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"

@@ -70,32 +70,29 @@ public class PrintImageFragment extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        mSelectImageBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_PICK, null);
-                intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
-                startActivityForResult(intent, PICK_IMAGE_REQUEST);
-                //BitmapSplitter(BitmapFactory.decodeResource(getResources(),R.drawable.test));
-                /** 打印长图片问题测试修改：
-                 Bitmap bitmap3= BitmapFactory.decodeResource(getResources(),R.drawable.test);
-                 int h=bitmap3.getHeight();
-                 Bitmap bitmap0=null;
-                 Bitmap bitmapp=null;
-                 //y + height must be <= bitmap.height()
-                 for(int i=0;i<bitmap3.getHeight();){
-                 bitmap0= Bitmap.createBitmap(bitmap3, 0, i,
-                 bitmap3.getWidth(), 480);
-                 if(bitmap0!=null&&i<=bitmap3.getHeight()) {
-                 bitmapp = Bitmap.createScaledBitmap(bitmap0, 384, (int) ((384 * bitmap0.getHeight()) / (bitmap0.getWidth() * 1.0f)), true);
-                 if (bitmapp != null) {
-                 mPrinter.PrintBitmap(bitmapp);
-                 i = i + 480;
-                 }
-                 }
-                 }
-                 mPrinter.printBlankLine(60);*/
-            }
+        mSelectImageBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_PICK, null);
+            intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+            startActivityForResult(intent, PICK_IMAGE_REQUEST);
+            //BitmapSplitter(BitmapFactory.decodeResource(getResources(),R.drawable.test));
+            /** 打印长图片问题测试修改：
+             Bitmap bitmap3= BitmapFactory.decodeResource(getResources(),R.drawable.test);
+             int h=bitmap3.getHeight();
+             Bitmap bitmap0=null;
+             Bitmap bitmapp=null;
+             //y + height must be <= bitmap.height()
+             for(int i=0;i<bitmap3.getHeight();){
+             bitmap0= Bitmap.createBitmap(bitmap3, 0, i,
+             bitmap3.getWidth(), 480);
+             if(bitmap0!=null&&i<=bitmap3.getHeight()) {
+             bitmapp = Bitmap.createScaledBitmap(bitmap0, 384, (int) ((384 * bitmap0.getHeight()) / (bitmap0.getWidth() * 1.0f)), true);
+             if (bitmapp != null) {
+             mPrinter.PrintBitmap(bitmapp);
+             i = i + 480;
+             }
+             }
+             }
+             mPrinter.printBlankLine(60);*/
         });
         mPrintBtn.setOnClickListener(new View.OnClickListener() {
             @Override

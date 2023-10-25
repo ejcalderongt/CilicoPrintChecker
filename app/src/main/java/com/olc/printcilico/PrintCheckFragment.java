@@ -58,8 +58,9 @@ public class PrintCheckFragment extends Fragment implements View.OnClickListener
     private int mKeyTextSize = 24;
     private int mValueTextSize = 20;
     private int mValue2TextSize = 22;
-    private int mLineTextSize = 18;
+    private int mLineTextSize = 20;
     private int mTitleTextSize = 40;
+    private int mEmpresaTextSize = 20;
     /* BarCode Image size  */
     private int mBarcodeSize = 80;
     private int mOffsetX = 210;
@@ -78,6 +79,8 @@ public class PrintCheckFragment extends Fragment implements View.OnClickListener
     private TextView mStatusTextView;
 
     private String mTitleStr = "Registro de Lectura ";
+    private String mEmpresaStr = "Empresa Eléctrica Municipal";
+    private String mEmpresaStr1 = "San Pedro Pinula, Departamento de Jalapa";
     private PrintType mTitleType = PrintType.Centering;
     private CheckBox mBoldCheckbox;
     private Spinner mAlignSpinner;
@@ -216,16 +219,24 @@ public class PrintCheckFragment extends Fragment implements View.OnClickListener
                 //Imprimir tìtulo con otro font y en grande.
                 printHelper.PrintStringEx(mTitleStr, mTitleTextSize, false, titleBold, mTitleType);
 
+                printHelper.PrintLineInit(mLineTextSize);
+                printHelper.PrintLineStringByType(mEmpresaStr, mEmpresaTextSize, PrintType.Centering, true);
+                printHelper.PrintLineEnd();
+
+                printHelper.PrintLineInit(mLineTextSize);
+                printHelper.PrintLineStringByType(mEmpresaStr1, mEmpresaTextSize, PrintType.Centering, true);
+                printHelper.PrintLineEnd();
+
                 while ((linea_archivo_texto = dfile.readLine()) != null) {
 
-                    if (!linea_archivo_texto.contains("Lectura")){
+                   // if (!linea_archivo_texto.contains("Lectura")){
 
                         textData.append(linea_archivo_texto).append("\n");
                         printHelper.PrintLineInit(mLineTextSize);
                         printHelper.PrintLineStringByType(linea_archivo_texto, mLineTextSize, PrintHelper.PrintType.Left, false);
                         printHelper.PrintLineEnd();
 
-                    }
+                   // }
                 }
 
                 printHelper.PrintLineInit(40);
@@ -763,7 +774,8 @@ public class PrintCheckFragment extends Fragment implements View.OnClickListener
 
         switch (v.getId()) {
             case R.id.btn_print:
-                testPrint();
+                //testPrint();
+                runPrint();
 
                 break;
             case R.id.btn_step:

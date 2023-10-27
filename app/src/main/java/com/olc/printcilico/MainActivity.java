@@ -127,7 +127,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             toast("err4 : "+ss);
         }
 
-        if (fname.isEmpty()) fname=this.getFilesDir()+"/lectura.txt";
+        if (fname.isEmpty()) fname="/data/data/com.example.cuee_mobile/files/lectura.txt";
 
     }
     public void toast(String msg) {

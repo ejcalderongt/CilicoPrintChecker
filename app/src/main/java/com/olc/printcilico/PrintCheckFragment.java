@@ -1,9 +1,12 @@
 package com.olc.printcilico;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -30,6 +33,11 @@ import android.widget.Toast;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,8 +58,9 @@ public class PrintCheckFragment extends Fragment implements View.OnClickListener
     private int mKeyTextSize = 24;
     private int mValueTextSize = 20;
     private int mValue2TextSize = 22;
-    private int mLineTextSize = 18;
+    private int mLineTextSize = 20;
     private int mTitleTextSize = 40;
+    private int mEmpresaTextSize = 20;
     /* BarCode Image size  */
     private int mBarcodeSize = 80;
     private int mOffsetX = 210;
@@ -69,7 +78,9 @@ public class PrintCheckFragment extends Fragment implements View.OnClickListener
     private Spinner mSpinner;
     private TextView mStatusTextView;
 
-    private String mTitleStr = "Printer test ";
+    private String mTitleStr = "Registro de Lectura ";
+    private String mEmpresaStr = "Empresa Eléctrica Municipal";
+    private String mEmpresaStr1 = "San Pedro Pinula, Departamento de Jalapa";
     private PrintType mTitleType = PrintType.Centering;
     private CheckBox mBoldCheckbox;
     private Spinner mAlignSpinner;
@@ -84,7 +95,11 @@ public class PrintCheckFragment extends Fragment implements View.OnClickListener
     private View mGrayView;
     private View mToogleView;
     private View mView;
-
+    public String fname="";
+    private File file1;
+    private File ffile;
+    public int copies=1;
+    private Context mContext = null;
     public PrintCheckFragment() {
 
     }
@@ -94,24 +109,176 @@ public class PrintCheckFragment extends Fragment implements View.OnClickListener
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.activity_print_check, container, false);
         mCardWidth = getResources().getDimension(R.dimen.paper_content_size);
+        mContext = getActivity().getApplicationContext();
         initView();
         initData();
         initPrinter();
 
+        if (fname.isEmpty())    fname= Environment.getExternalStorageDirectory().getAbsolutePath()+"/lectura.txt";
+
+        Handler mtimer = new Handler();
+        Runnable mrunner= this::runPrint;
+        mtimer.postDelayed(mrunner,500);
+
         return mView;
     }
 
+    private void runPrint(){
+
+        try {
+
+            int rslt;
+
+            rslt= printFile();
+
+            if (rslt==1) {
+                endSession();
+            } else if (rslt==-1) {
+                Handler mtimer = new Handler();
+                Runnable mrunner= () -> endSession();
+                mtimer.postDelayed(mrunner,200);
+            } else if (rslt==0) {
+                endSession();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void endSession() {
+
+        try {
+
+//            if (copies>0) {
+//                toast("Imprimiendo . . . ");
+//                Handler mtimer = new Handler();
+//                Runnable mrunner= () -> restart();
+//                mtimer.postDelayed(mrunner,5000);
+//            }
+//
+//            finish();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    private int printFile() {
+
+        try {
+            file1 = new File(fname);
+            ffile = new File(file1.getPath());
+        } catch (Exception e) {
+            ShowMsg.showMsg("No se puede leer archivo de impresión", mContext);
+            return -1;
+        }
+
+        if (!createPrintData()) {
+            return 0;
+        }
+
+        try {
+            //file1.delete();
+        } catch (Exception e) {
+        }
+
+        return 1;
+    }
     public void initPrinter() {
         printHelper = new PrintHelper();
         printHelper.Open(getActivity().getApplication());
     }
+    private boolean createPrintData() {
 
+        try {
+
+            ffile = new File(file1.getPath());
+        } catch (Exception e) {
+            ShowMsg.showMsg("No se puede leer archivo de impresión", mContext);return false;
+        }
+
+        BufferedReader dfile = null;
+        StringBuilder textData = new StringBuilder();
+        String linea_archivo_texto;
+
+        try {
+            FileInputStream fIn = new FileInputStream(ffile);
+            dfile = new BufferedReader(new InputStreamReader(fIn));
+        } catch (Exception e) {
+            ShowMsg.showMsg("No se puede leer archivo de impresión " + e.getMessage(), mContext); return false;
+        }
+
+        try {
+
+            int is_ready = printHelper.IsReady();
+
+            if (is_ready==0){
+
+                //Definir grado de oscuridad.
+                printHelper.SetGrayLevel((byte) 0x05);
+                //Imprimir tìtulo con otro font y en grande.
+                printHelper.PrintStringEx(mTitleStr, mTitleTextSize, false, titleBold, mTitleType);
+
+                printHelper.PrintLineInit(mLineTextSize);
+                printHelper.PrintLineStringByType(mEmpresaStr, mEmpresaTextSize, PrintType.Centering, true);
+                printHelper.PrintLineEnd();
+
+                printHelper.PrintLineInit(mLineTextSize);
+                printHelper.PrintLineStringByType(mEmpresaStr1, mEmpresaTextSize, PrintType.Centering, true);
+                printHelper.PrintLineEnd();
+
+                while ((linea_archivo_texto = dfile.readLine()) != null) {
+
+                        textData.append(linea_archivo_texto).append("\n");
+                        printHelper.PrintLineInit(mLineTextSize);
+                        printHelper.PrintLineStringByType(linea_archivo_texto, mLineTextSize, PrintHelper.PrintType.Left, false);
+                        printHelper.PrintLineEnd();
+
+                }
+
+                printHelper.PrintLineInit(40);
+                printHelper.PrintLineStringByType("", mKeyTextSize, PrintHelper.PrintType.Right, true);//160
+                printHelper.PrintLineEnd();
+                printHelper.printBlankLine(40);
+
+            }
+
+            try {
+                dfile.close();
+                printHelper.Close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            copies--;
+
+        } catch (Exception e) {
+            showException(e);return false;
+        }
+
+        return true;
+    }
+
+    public void showException(Exception e) {
+        try {
+            String msg;
+            msg = e.toString();
+            toast(msg);
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+    public void toast(String msg) {
+        Toast toast= Toast.makeText(mContext,msg,Toast.LENGTH_LONG);
+        toast.setGravity(Gravity.CENTER, 0, 0);
+        toast.show();
+    }
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
         String[] strAct = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"};
-        ArrayAdapter mAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, strAct);
+        ArrayAdapter mAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, strAct);
         mAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
         mSpinner.setAdapter(mAdapter);
         printHelper.SetGrayLevel((byte) 0x05);
@@ -175,114 +342,47 @@ public class PrintCheckFragment extends Fragment implements View.OnClickListener
         });
 
         mBoldCheckbox.setChecked(true);
-        mBoldCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    titleBold = true;
-                } else {
-                    titleBold = false;
-                }
-                mEditText.getPaint().setFakeBoldText(titleBold);
+        mBoldCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                titleBold = true;
+            } else {
+                titleBold = false;
             }
+            mEditText.getPaint().setFakeBoldText(titleBold);
         });
 
         mAdvanceCheckbox.setChecked(false);
-        mAdvanceCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    controlViewStatus(true);
-                } else {
-                    controlViewStatus(false);
-                }
+        mAdvanceCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                controlViewStatus(true);
+            } else {
+                controlViewStatus(false);
             }
         });
 
         mCard1ContentLayout.removeAllViews();
         fillLineViews(mCard1ContentLayout);
 
-        Bitmap bm = null;
-        try {
-            bm = BarcodeUtil.encodeAsBitmap("Thanks for using our Android terminal",
-                    BarcodeFormat.QR_CODE, mBarcodeSize, mBarcodeSize);
-            ImageView imagView = new ImageView(getActivity());
-            LinearLayout.LayoutParams layoutParam = new LinearLayout.LayoutParams(mBarcodeSize, mBarcodeSize);
-            layoutParam.gravity = Gravity.CENTER_HORIZONTAL;
-            imagView.setLayoutParams(layoutParam);
-            imagView.setImageBitmap(bm);
-            mCard1ContentLayout.addView(imagView);
-        } catch (WriterException e) {
-            e.printStackTrace();
-        }
+//        Bitmap bm = null;
+//        try {
+//            bm = BarcodeUtil.encodeAsBitmap("Thanks for using our Android terminal",
+//                    BarcodeFormat.QR_CODE, mBarcodeSize, mBarcodeSize);
+//            ImageView imagView = new ImageView(getActivity());
+//            LinearLayout.LayoutParams layoutParam = new LinearLayout.LayoutParams(mBarcodeSize, mBarcodeSize);
+//            layoutParam.gravity = Gravity.CENTER_HORIZONTAL;
+//            imagView.setLayoutParams(layoutParam);
+//            imagView.setImageBitmap(bm);
+//            mCard1ContentLayout.addView(imagView);
+//        } catch (WriterException e) {
+//            e.printStackTrace();
+//        }
 
         controlViewStatus(false);
         mToggleButton.performClick();
     }
 
-    private void initView() {
-        mCard1ContentLayout = (LinearLayout) mView.findViewById(R.id.lyt_card1_content);
-        mStatusTextView = (TextView) mView.findViewById(R.id.tv_status);
-        mPrintButton = (Button) mView.findViewById(R.id.btn_print);
-        mPrintButton.setOnClickListener(this);
-        mStepButton = (Button) mView.findViewById(R.id.btn_step);
-        mStepButton.setOnClickListener(this);
+    private void initDataTest() {
 
-        mToggleButton = (Switch) mView.findViewById(R.id.toggleButton);
-//        mToggleButton.setOnClickListener(this);
-        mToggleButton.setOnCheckedChangeListener(this);
-        mSpinner = (Spinner) mView.findViewById(R.id.spinner);
-        mBoldCheckbox = (CheckBox) mView.findViewById(R.id.cb_blod);
-        mAlignSpinner = (Spinner) mView.findViewById(R.id.spinner_align);
-        mTitleSizeSpinner = (Spinner) mView.findViewById(R.id.spinner_textsize);
-
-        mBlodView = mView.findViewById(R.id.lyt_blod);
-        mTextSizeView = mView.findViewById(R.id.lyt_textsize);
-        mAlignView = mView.findViewById(R.id.lyt_align);
-        mGrayView = mView.findViewById(R.id.lyt_gray);
-        mToogleView = mView.findViewById(R.id.lyt_toggle);
-
-        mAdvanceCheckbox = (CheckBox) mView.findViewById(R.id.cb_setting);
-
-
-    }
-
-    private void updateTitleViewLayoutParams() {
-        mTitleObject.direct = mTitleType;
-        Paint paint = mEditText.getPaint();
-        try {
-            mTitleObject.content = mEditText.getEditableText().toString();
-        } catch (Exception e) {
-
-        }
-        AbsoluteLayout.LayoutParams params = generateLayoutParams(mEditText, mTitleObject, paint);
-        if (params != null) {
-            mEditText.setLayoutParams(params);
-            mEditText.postInvalidate();
-        }
-    }
-
-    private void controlViewStatus(boolean flag) {
-        if (flag) {
-            mEditText.setEnabled(true);
-            mView.findViewById(R.id.lyt_advance).setVisibility(View.VISIBLE);
-            mBlodView.setVisibility(View.VISIBLE);
-            mTextSizeView.setVisibility(View.VISIBLE);
-            mAlignView.setVisibility(View.VISIBLE);
-            mGrayView.setVisibility(View.VISIBLE);
-            mToogleView.setVisibility(View.VISIBLE);
-        } else {
-            mEditText.setEnabled(false);
-            mView.findViewById(R.id.lyt_advance).setVisibility(View.GONE);
-            mBlodView.setVisibility(View.GONE);
-            mTextSizeView.setVisibility(View.GONE);
-            mAlignView.setVisibility(View.GONE);
-            mGrayView.setVisibility(View.GONE);
-            mToogleView.setVisibility(View.GONE);
-        }
-    }
-
-    private void initData() {
         mDataList.clear();
         String spiltStr = "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~";
         List<StringObject> mLine1List = new ArrayList<StringObject>();
@@ -434,7 +534,121 @@ public class PrintCheckFragment extends Fragment implements View.OnClickListener
 
     }
 
+    private void initView() {
+
+
+        mCard1ContentLayout = (LinearLayout) mView.findViewById(R.id.lyt_card1_content);
+        mStatusTextView = (TextView) mView.findViewById(R.id.tv_status);
+        mPrintButton = (Button) mView.findViewById(R.id.btn_print);
+        mPrintButton.setOnClickListener(this);
+        mStepButton = (Button) mView.findViewById(R.id.btn_step);
+        mStepButton.setOnClickListener(this);
+
+        mToggleButton = (Switch) mView.findViewById(R.id.toggleButton);
+//        mToggleButton.setOnClickListener(this);
+        mToggleButton.setOnCheckedChangeListener(this);
+        mSpinner = (Spinner) mView.findViewById(R.id.spinner);
+        mBoldCheckbox = (CheckBox) mView.findViewById(R.id.cb_blod);
+        mAlignSpinner = (Spinner) mView.findViewById(R.id.spinner_align);
+        mTitleSizeSpinner = (Spinner) mView.findViewById(R.id.spinner_textsize);
+
+        mBlodView = mView.findViewById(R.id.lyt_blod);
+        mTextSizeView = mView.findViewById(R.id.lyt_textsize);
+        mAlignView = mView.findViewById(R.id.lyt_align);
+        mGrayView = mView.findViewById(R.id.lyt_gray);
+        mToogleView = mView.findViewById(R.id.lyt_toggle);
+
+        mAdvanceCheckbox = (CheckBox) mView.findViewById(R.id.cb_setting);
+
+
+    }
+
+    private void updateTitleViewLayoutParams() {
+        mTitleObject.direct = mTitleType;
+        Paint paint = mEditText.getPaint();
+        try {
+            mTitleObject.content = mEditText.getEditableText().toString();
+        } catch (Exception e) {
+
+        }
+        AbsoluteLayout.LayoutParams params = generateLayoutParams(mEditText, mTitleObject, paint);
+        if (params != null) {
+            mEditText.setLayoutParams(params);
+            mEditText.postInvalidate();
+        }
+    }
+
+    private void controlViewStatus(boolean flag) {
+        if (flag) {
+            mEditText.setEnabled(true);
+            mView.findViewById(R.id.lyt_advance).setVisibility(View.VISIBLE);
+            mBlodView.setVisibility(View.VISIBLE);
+            mTextSizeView.setVisibility(View.VISIBLE);
+            mAlignView.setVisibility(View.VISIBLE);
+            mGrayView.setVisibility(View.VISIBLE);
+            mToogleView.setVisibility(View.VISIBLE);
+        } else {
+            mEditText.setEnabled(false);
+            mView.findViewById(R.id.lyt_advance).setVisibility(View.GONE);
+            mBlodView.setVisibility(View.GONE);
+            mTextSizeView.setVisibility(View.GONE);
+            mAlignView.setVisibility(View.GONE);
+            mGrayView.setVisibility(View.GONE);
+            mToogleView.setVisibility(View.GONE);
+        }
+    }
+
+    private void initData() {
+
+        try {
+            file1 = new File(fname);
+            ffile = new File(file1.getPath());
+        } catch (Exception e) {
+            ShowMsg.showMsg("No se puede leer archivo de impresión", mContext);
+        }
+
+        try {
+
+            ffile = new File(file1.getPath());
+        } catch (Exception e) {
+            ShowMsg.showMsg("No se puede leer archivo de impresión", mContext);
+        }
+
+        BufferedReader dfile = null;
+        StringBuilder textData = new StringBuilder();
+        String linea_archivo_texto;
+
+        try {
+            FileInputStream fIn = new FileInputStream(ffile);
+            dfile = new BufferedReader(new InputStreamReader(fIn));
+        } catch (Exception e) {
+            ShowMsg.showMsg("No se puede leer archivo de impresión " + e.getMessage(), mContext);
+        }
+
+        try {
+
+            mDataList.clear();
+
+
+
+            while ((linea_archivo_texto = dfile.readLine()) != null) {
+
+                List<StringObject> mLine3List = new ArrayList<>();
+                mLine3List.add(generateStringObject(linea_archivo_texto, mKeyTextSize, -1, -1, true, PrintType.Left));
+                LineObject line3Object = new LineObject();
+                line3Object.stringObjects = mLine3List;
+                line3Object.maxTextSize = mKeyTextSize;
+                line3Object.blod = true;
+                mDataList.add(line3Object);
+            }
+
+        } catch (Exception e) {
+            showException(e);
+        }
+    }
+
     private void fillLineViews(LinearLayout card1ContentLayout) {
+
         for (int i = 0; i < mDataList.size(); i++) {
 
             LineObject lineObject = mDataList.get(i);
@@ -443,6 +657,7 @@ public class PrintCheckFragment extends Fragment implements View.OnClickListener
             AbsoluteLayout absoluteLayout = new AbsoluteLayout(getActivity());
 
             if (i == 0) {
+
                 mTitleObject = stringObjects.get(0);
                 mEditText = new EditText(getActivity());
                 mEditText.setTextColor(Color.BLACK);
@@ -556,7 +771,8 @@ public class PrintCheckFragment extends Fragment implements View.OnClickListener
 
         switch (v.getId()) {
             case R.id.btn_print:
-                testPrint();
+                //testPrint();
+                runPrint();
 
                 break;
             case R.id.btn_step:

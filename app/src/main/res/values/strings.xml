@@ -7,9 +7,9 @@
     <string name="lable_width">Label Width:</string>
     <string name="lable_height">Label Height:</string>
     <string name="graylevel">GrayLevel:</string>
-    <string name="open">Open</string>
-    <string name="close">Close</string>
-    <string name="print">Print</string>
+    <string name="open">Abrir</string>
+    <string name="close">Cerrar</string>
+    <string name="print">Imprimir</string>
     <string name="width">Width:</string>
     <string name="height">Height:</string>
     <string name="barcode">BarCode:</string>
@@ -24,10 +24,10 @@
     <string name="create">Update Setting</string>
     <string name="advance">advanced setting:</string>
     <string name="paper">Tagboard:</string>
-    <string name="printer_opened">The Printer is opened</string>
-    <string name="printer_closed">The Printer is closed</string>
-    <string name="printer_opene_fail">Open the Printer fail</string>
-    <string name="printer_close_fail">Close the Printer fail</string>
+    <string name="printer_opened">Conexión a impresora correcta</string>
+    <string name="printer_closed">No se pudo conectar a la imrpesora</string>
+    <string name="printer_opene_fail">Fallo al abrir la conexión a la impresora</string>
+    <string name="printer_close_fail">Fallo al cerrar la impresora</string>
     <string name="notice_one">Notice: Only support to create 128 and EAN  the two kinds of 1d barcode</string>
     <string name="notice_two">Notice: Only support to create QR and PDF417  the two kinds of 2d barcode</string>
     <string name="modify_one_tips">1d barcode settings</string>
@@ -41,7 +41,7 @@
     <string name="zh_create_1d_tips">The contents which contains chinese can not generate  a one-dimensional code</string>
     <string name="scan_title">DIY Print</string>
     <string name="web_title">Invoke print</string>
-    <string name="check_title">Printer check</string>
+    <string name="check_title">Impresión de Lectura</string>
     <string name="current_size_tips">the label size is  </string>
     <string name="web_path">file:///android_asset/print_en.html"</string>
     <string name="print_select_image">Select image</string>

@@ -229,14 +229,11 @@ public class PrintCheckFragment extends Fragment implements View.OnClickListener
 
                 while ((linea_archivo_texto = dfile.readLine()) != null) {
 
-                   // if (!linea_archivo_texto.contains("Lectura")){
-
                         textData.append(linea_archivo_texto).append("\n");
                         printHelper.PrintLineInit(mLineTextSize);
                         printHelper.PrintLineStringByType(linea_archivo_texto, mLineTextSize, PrintHelper.PrintType.Left, false);
                         printHelper.PrintLineEnd();
 
-                   // }
                 }
 
                 printHelper.PrintLineInit(40);

@@ -43,6 +43,7 @@ dependencies {
     //noinspection GradleCompatible
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    implementation 'com.google.code.gson:gson:2.10'
     //testCompile 'junit:junit:4.12'
     testImplementation 'junit:junit:4.12'
     implementation files('libs/core-2.3.0.jar')

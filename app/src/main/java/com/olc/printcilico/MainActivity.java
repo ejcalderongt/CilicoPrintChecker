@@ -21,6 +21,9 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.olc.printcilico.clases.clsBeLecturaImp;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -42,6 +45,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private File ffile;
     private int copies=1;
     private String fname="";
+    private clsBeLecturaImp lectura;
     private Context mContext = null;
     private PrintHelper.PrintType mTitleType = PrintHelper.PrintType.Centering;
     private boolean titleBold = true;
@@ -103,12 +107,21 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     }
 
     private void processBundle(Bundle b) {
-
         String flog= Environment.getExternalStorageDirectory()+"/loglectura.txt";
         String ss="";
         String lf="\r\n";
 
         try {
+            try {
+                String lecturaJson = "";
+                lecturaJson = b.getString("lectura");
+
+                Gson gson = new Gson();
+                lectura = gson.fromJson(lecturaJson, clsBeLecturaImp.class);
+
+            } catch (Exception e) {
+               ss=e.getMessage();
+            }
 
             try {
                 fname=b.getString("fname");ss=fname;
@@ -127,7 +140,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             toast("err4 : "+ss);
         }
 
-        if (fname.isEmpty()) fname="/data/data/com.example.cuee_mobile/files/lectura.txt";
+        if (fname.isEmpty()) fname="/data/data/com.olc.printcilico/lectura.txt";
 
     }
     public void toast(String msg) {

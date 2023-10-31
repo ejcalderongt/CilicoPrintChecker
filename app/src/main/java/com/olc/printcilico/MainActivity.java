@@ -176,17 +176,21 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
             wfile=new FileWriter(fname);
             writer = new BufferedWriter(wfile);
+            writer.write("\r\n");
             writer.write(lectura.Nit);
             writer.write("\r\n");
             writer.write(lectura.Direccion);
             writer.write("\r\n");
+            writer.write("\r\n");
             writer.write(lectura.Fecha);
+            writer.write("\r\n");
             writer.write("\r\n");
             writer.write(lectura.Ruta);
             writer.write("\r\n");
             writer.write(lectura.Itinerario);
             writer.write("\r\n");
             writer.write(lectura.Tecnico);
+            writer.write("\r\n");
             writer.write("\r\n");
             writer.write(lectura.Usuario);
             writer.write("\r\n");
@@ -197,6 +201,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             writer.write(lectura.LecturaActual);
             writer.write("\r\n");
             writer.write(lectura.Consumo);
+            writer.write("\r\n");
+            writer.write("\r\n");
             writer.write("\r\n");
             writer.write(lectura.CorreoEmp);
 

@@ -25,8 +25,10 @@ import com.google.gson.Gson;
 import com.olc.printcilico.clases.clsBeLecturaImp;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -55,7 +57,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private int mKeyTextSize = 24;
     private String mTitleStr = "Registro de lectura";
     private int mOffsetX = 210;
-    PrintHelper printHelper = null;
+    private BufferedWriter writer = null;
+    private FileWriter wfile;
+        PrintHelper printHelper = null;
     @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,6 +125,22 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
             } catch (Exception e) {
                ss=e.getMessage();
+                clsBeLecturaImp lectura2 = new clsBeLecturaImp();
+
+                lectura2.Nit= String.valueOf(20);
+                lectura2.Direccion= String.valueOf(20);
+                lectura2.Fecha= String.valueOf(20);
+                lectura2.Ruta= String.valueOf(20);
+                lectura2.Itinerario= String.valueOf(20);
+                lectura2.Tecnico= String.valueOf(20);
+                lectura2.Usuario= String.valueOf(20);
+                lectura2.Contador= String.valueOf(20);
+                lectura2.LecturaAnterior= String.valueOf(20);
+                lectura2.LecturaActual= String.valueOf(20);
+                lectura2.Consumo= String.valueOf(20);
+                lectura2.CorreoEmp= String.valueOf(20);
+
+                lectura = lectura2;
             }
 
             try {
@@ -140,9 +160,56 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             toast("err4 : "+ss);
         }
 
-        if (fname.isEmpty()) fname="/data/data/com.olc.printcilico/lectura.txt";
+        if (fname.isEmpty() || fname.equals("lect")) fname="/data/data/com.olc.printcilico/lectura.txt";
+
+        if (lectura!=null){
+            saverep();
+        }
 
     }
+
+
+    public boolean saverep(){
+        String s;
+
+        try {
+
+            wfile=new FileWriter(fname);
+            writer = new BufferedWriter(wfile);
+            writer.write(lectura.Nit);
+            writer.write("\r\n");
+            writer.write(lectura.Direccion);
+            writer.write("\r\n");
+            writer.write(lectura.Fecha);
+            writer.write("\r\n");
+            writer.write(lectura.Ruta);
+            writer.write("\r\n");
+            writer.write(lectura.Itinerario);
+            writer.write("\r\n");
+            writer.write(lectura.Tecnico);
+            writer.write("\r\n");
+            writer.write(lectura.Usuario);
+            writer.write("\r\n");
+            writer.write(lectura.Contador);
+            writer.write("\r\n");
+            writer.write(lectura.LecturaAnterior);
+            writer.write("\r\n");
+            writer.write(lectura.LecturaActual);
+            writer.write("\r\n");
+            writer.write(lectura.Consumo);
+            writer.write("\r\n");
+            writer.write(lectura.CorreoEmp);
+
+            writer.close();
+
+        } catch(Exception e){
+            Toast.makeText(this,e.getMessage(), Toast.LENGTH_LONG).show();
+            return false;
+        }
+
+        return true;
+    }
+
     public void toast(String msg) {
         Toast toast= Toast.makeText(mContext,msg,Toast.LENGTH_LONG);
         toast.setGravity(Gravity.CENTER, 0, 0);

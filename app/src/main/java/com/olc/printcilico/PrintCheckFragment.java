@@ -603,6 +603,7 @@ public class PrintCheckFragment extends Fragment implements View.OnClickListener
         try {
             file1 = new File(fname);
             ffile = new File(file1.getPath());
+            ffile.exists();
         } catch (Exception e) {
             ShowMsg.showMsg("No se puede leer archivo de impresión", mContext);
         }

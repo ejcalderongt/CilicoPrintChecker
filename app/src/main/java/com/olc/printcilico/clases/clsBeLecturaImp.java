@@ -14,5 +14,6 @@ public class clsBeLecturaImp implements Serializable {
     public String LecturaAnterior = "";
     public String LecturaActual = "";
     public String Consumo = "";
+    public String Texto = "";
     public String CorreoEmp = "EEM_SSP@HOTMAIL.COM";
 }

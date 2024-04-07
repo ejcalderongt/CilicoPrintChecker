@@ -66,7 +66,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private String cursym="Q";
     private DecimalFormat decfrm;
     public ArrayList<String> items=new ArrayList<String>();
-        PrintHelper printHelper = null;
+    public static int tipoImp = 1;
+    PrintHelper printHelper = null;
     @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +80,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         prwh=(int) Math.floor(prw/2);
         seplen = prw;
         decfrm = new DecimalFormat("#,##0.00");
+        tipoImp = 1;
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 10000);
@@ -137,6 +139,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 if (lecturaJson != null) {
                     lectura = gson.fromJson(lecturaJson, clsBeLecturaImp.class);
                 } else if (proformaJson != null) {
+                    tipoImp = 2;
                     proforma = gson.fromJson(proformaJson, clsBeProformaImp.class);
                 }
 
@@ -193,21 +196,15 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     public boolean saveProforma() {
 
         try {
-            addc("EMPRESA ELÉCTRICA MUNICIPAL");
-            addc("SAN PEDRO PINULA, JALAPA");
-            addc("Bo. San Pedro, Teléfono 7922-1101");
-            addc("NIT: 112388302");
+            addc("NIT: 112388302 Teléfono 7922-1101");
             add("");
 
             add2string("Fecha notificación: ", proforma.Fecha_notificacion);
             add("");
             add("No. proforma: " + proforma.proforma.serie_proforma + " - " + (int) proforma.proforma.num_proforma+"");
-            add("Contribuyente: " + proforma.Contribuyente);
+            add("Usuario: " + proforma.Contribuyente);
             add("Dirección: " + proforma.Direccion);
-            add("");
-
             add("Contador: " + proforma.Contador);
-            add("Monto en letras: "+ proforma.Monto_letras);
             add("");
 
             add("Meses que adeuda:");
@@ -216,7 +213,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
             for (clsBeTmpProformaUs obj: proforma.pendientes) {
                 String mes = obj.NoMes <= 9 ? "0"+obj.NoMes:obj.NoMes+"";
-                add4lrrT(mes+" "+obj.Anio, obj.Consumo+"KW", obj.Demanda+" KW", obj.Cantidad);
+                add4lrrT(mes+" "+obj.Anio, obj.Consumo+"KWH", obj.Demanda+" KWH", obj.Cantidad);
             }
             add("");
 
@@ -236,20 +233,14 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             addtot("Monto total:", proforma.Total);
             add("");
 
-            add("Observaciones:");
-            add(proforma.proforma.observacion);
-            add("");
-
-            add("EMITIR CHEQUE A NOMBRE DE: ");
-            add("EMPRESA ELECTRICA MUNICIPAL ");
-            add("SAN PEDRO PINULA.");
-            add("");
-
-            add("Atentamente:");
-            add("EMPRESA ELÉCTRICA MUNICIPAL");
+            if (!proforma.proforma.observacion.isEmpty()) {
+                add("Observaciones:");
+                add(proforma.proforma.observacion);
+                add("");
+            }
 
             add("");
-            addc("Últimos consumos (KHW)");
+            addc("Últimos consumos (KWH)");
             line();
             add3lrr(proforma.consumos.get(0).Mes, proforma.consumos.get(1).Mes, proforma.consumos.get(2).Mes);
             add3lrr(proforma.consumos.get(0).Consumo+"", proforma.consumos.get(1).Consumo+"", proforma.consumos.get(2).Consumo+"");

@@ -44,6 +44,7 @@ import java.util.List;
 import Printer.PrintHelper;
 import Printer.PrintHelper.PrintType;
 import hardware.print.BarcodeUtil;
+import static com.olc.printcilico.MainActivity.tipoImp;
 
 /************************************************************
  * Copyright 2000-2066 Olc Corp., Ltd.
@@ -214,6 +215,9 @@ public class PrintCheckFragment extends Fragment implements View.OnClickListener
 
             if (is_ready==0){
 
+                if (tipoImp == 2) {
+                    mTitleStr =  "Proforma de Pago";
+                }
                 //Definir grado de oscuridad.
                 printHelper.SetGrayLevel((byte) 0x05);
                 //Imprimir tìtulo con otro font y en grande.
@@ -231,7 +235,10 @@ public class PrintCheckFragment extends Fragment implements View.OnClickListener
 
                         textData.append(linea_archivo_texto).append("\n");
                         printHelper.PrintLineInit(mLineTextSize);
-                        printHelper.PrintLineStringByType(linea_archivo_texto, mLineTextSize, PrintHelper.PrintType.Left, false);
+
+                        boolean negrita = (tipoImp == 2 && linea_archivo_texto.contains("Monto total:")) ? true: false;
+                        printHelper.PrintLineStringByType(linea_archivo_texto, mLineTextSize, PrintHelper.PrintType.Left, negrita);
+
                         printHelper.PrintLineEnd();
 
                 }

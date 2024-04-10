@@ -237,7 +237,10 @@ public class PrintCheckFragment extends Fragment implements View.OnClickListener
                         printHelper.PrintLineInit(mLineTextSize);
 
                         boolean negrita = (tipoImp == 2 && (linea_archivo_texto.contains("Monto total:") ||
-                                                            linea_archivo_texto.contains("SU PROFORMA GENERA ORDEN DE CORTE"))) ? true: false;
+                                                            linea_archivo_texto.contains("SU PROFORMA GENERA") ||
+                                                            linea_archivo_texto.contains("A PARTIR DE") ||
+                                                            linea_archivo_texto.contains("Si ya realizó") ||
+                                                            linea_archivo_texto.contains("Lectura actual:"))) ? true: false;
                         printHelper.PrintLineStringByType(linea_archivo_texto, mLineTextSize, PrintHelper.PrintType.Left, negrita);
 
                         printHelper.PrintLineEnd();

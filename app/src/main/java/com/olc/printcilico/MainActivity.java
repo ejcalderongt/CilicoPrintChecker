@@ -239,8 +239,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 add("Observaciones:");
                 if (proforma.proforma.observacion.contains("SU PROFORMA GENERA")){
                     add(proforma.proforma.observacion.substring(0,27));
-                    add(proforma.proforma.observacion.substring(28,57));
-                    add(proforma.proforma.observacion.substring(58,observacion.length()));
+                    add(proforma.proforma.observacion.substring(28,58));
+                    add(proforma.proforma.observacion.substring(59,proforma.proforma.observacion.length()));
                 }else{
                     add(proforma.proforma.observacion);
                 }
@@ -253,7 +253,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 add(observacion.substring(58,observacion.length()));
                 add("");
             }*/
-
+            add(proforma.LecturaActual);
             add("");
             addc("Últimos consumos (Kwh)");
             line();

@@ -26,8 +26,8 @@
     <string name="paper">Tagboard:</string>
     <string name="printer_opened">Conexión a impresora correcta</string>
     <string name="printer_closed">No se pudo conectar a la imrpesora</string>
-    <string name="printer_opene_fail">Fallo al abrir la conexión a la impresora</string>
-    <string name="printer_close_fail">Fallo al cerrar la impresora</string>
+    <string name="printer_opene_fail">Falló al abrir la conexión a la impresora</string>
+    <string name="printer_close_fail">Falló al cerrar la impresora</string>
     <string name="notice_one">Notice: Only support to create 128 and EAN  the two kinds of 1d barcode</string>
     <string name="notice_two">Notice: Only support to create QR and PDF417  the two kinds of 2d barcode</string>
     <string name="modify_one_tips">1d barcode settings</string>
@@ -41,7 +41,7 @@
     <string name="zh_create_1d_tips">The contents which contains chinese can not generate  a one-dimensional code</string>
     <string name="scan_title">DIY Print</string>
     <string name="web_title">Invoke print</string>
-    <string name="check_title">Impresión de Lectura</string>
+    <string name="check_title">Impresión</string>
     <string name="current_size_tips">the label size is  </string>
     <string name="web_path">file:///android_asset/print_en.html"</string>
     <string name="print_select_image">Select image</string>

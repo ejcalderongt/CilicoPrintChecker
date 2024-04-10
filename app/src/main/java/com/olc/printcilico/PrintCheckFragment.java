@@ -236,7 +236,8 @@ public class PrintCheckFragment extends Fragment implements View.OnClickListener
                         textData.append(linea_archivo_texto).append("\n");
                         printHelper.PrintLineInit(mLineTextSize);
 
-                        boolean negrita = (tipoImp == 2 && linea_archivo_texto.contains("Monto total:")) ? true: false;
+                        boolean negrita = (tipoImp == 2 && (linea_archivo_texto.contains("Monto total:") ||
+                                                            linea_archivo_texto.contains("SU PROFORMA GENERA ORDEN DE CORTE"))) ? true: false;
                         printHelper.PrintLineStringByType(linea_archivo_texto, mLineTextSize, PrintHelper.PrintType.Left, negrita);
 
                         printHelper.PrintLineEnd();
@@ -636,8 +637,6 @@ public class PrintCheckFragment extends Fragment implements View.OnClickListener
         try {
 
             mDataList.clear();
-
-
 
             while ((linea_archivo_texto = dfile.readLine()) != null) {
 

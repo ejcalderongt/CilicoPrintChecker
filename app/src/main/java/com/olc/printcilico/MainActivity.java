@@ -194,8 +194,10 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     }
 
     public boolean saveProforma() {
-
+        String observacion="";
         try {
+            //observacion = "SU PROFORMA GENERA ORDEN DE CORTE A PARTIR DEL 04/05/2024. Si ya realizó su pago, favor hacer caso omiso.";
+
             addc("NIT: 112388302 Teléfono 7922-1101");
             add("");
 
@@ -213,7 +215,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
             for (clsBeTmpProformaUs obj: proforma.pendientes) {
                 String mes = obj.NoMes <= 9 ? "0"+obj.NoMes:obj.NoMes+"";
-                add4lrrT(mes+" "+obj.Anio, obj.Consumo+"KWH", obj.Demanda+" KWH", obj.Cantidad);
+                add4lrrT(mes+" "+obj.Anio, obj.Consumo+"Kwh", obj.Demanda+" Kw", obj.Cantidad);
             }
             add("");
 
@@ -235,12 +237,25 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
             if (!proforma.proforma.observacion.isEmpty()) {
                 add("Observaciones:");
-                add(proforma.proforma.observacion);
+                if (proforma.proforma.observacion.contains("SU PROFORMA GENERA")){
+                    add(proforma.proforma.observacion.substring(0,27));
+                    add(proforma.proforma.observacion.substring(28,57));
+                    add(proforma.proforma.observacion.substring(58,observacion.length()));
+                }else{
+                    add(proforma.proforma.observacion);
+                }
                 add("");
             }
+            /*else{
+                add("Observaciones:");
+                add(observacion.substring(0,27));
+                add(observacion.substring(28,57));
+                add(observacion.substring(58,observacion.length()));
+                add("");
+            }*/
 
             add("");
-            addc("Últimos consumos (KWH)");
+            addc("Últimos consumos (Kwh)");
             line();
             add3lrr(proforma.consumos.get(0).Mes, proforma.consumos.get(1).Mes, proforma.consumos.get(2).Mes);
             add3lrr(proforma.consumos.get(0).Consumo+"", proforma.consumos.get(1).Consumo+"", proforma.consumos.get(2).Consumo+"");
@@ -261,7 +276,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
             wfile=new FileWriter(fname);
             writer = new BufferedWriter(wfile);
-            writer.write("\r\n");
             writer.write(lectura.Nit);
             writer.write("\r\n");
             writer.write(lectura.Direccion);
@@ -486,7 +500,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                     s = "";
                 }
 
-                if (s.length() > prw) {
+                /*if (s.length() > prw) {
                     int largo = s.length();
                     String sOriginal = s;
                     while (largo > prw) {
@@ -496,7 +510,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                         sOriginal = s;
                         largo = s.length();
                     }
-                }
+                }*/
 
                 writer.write(s);
                 writer.write("\r\n");

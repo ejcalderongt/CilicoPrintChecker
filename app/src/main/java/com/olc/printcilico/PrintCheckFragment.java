@@ -217,6 +217,10 @@ public class PrintCheckFragment extends Fragment implements View.OnClickListener
 
                 if (tipoImp == 2) {
                     mTitleStr =  "Proforma de Pago";
+                }else{
+                    if (tipoImp == 3){
+                        mTitleStr =  "Notificación";
+                    }
                 }
                 //Definir grado de oscuridad.
                 printHelper.SetGrayLevel((byte) 0x05);

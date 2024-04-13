@@ -138,6 +138,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 Gson gson = new Gson();
                 if (lecturaJson != null) {
                     lectura = gson.fromJson(lecturaJson, clsBeLecturaImp.class);
+                    if (lectura.Notificacion.equals("1")){
+                        tipoImp = 3;
+                    }
                 } else if (proformaJson != null) {
                     tipoImp = 2;
                     proforma = gson.fromJson(proformaJson, clsBeProformaImp.class);
@@ -210,12 +213,13 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             add("");
 
             add("Meses que adeuda:");
-            add("Meses    Lectura     Demanda       Monto");
+            add("Meses   Consumo  Consumo  Monto");
+            add("               (Kwh)    (Kw)         ");
             line();
 
             for (clsBeTmpProformaUs obj: proforma.pendientes) {
                 String mes = obj.NoMes <= 9 ? "0"+obj.NoMes:obj.NoMes+"";
-                add4lrrT(mes+" "+obj.Anio, obj.Consumo+"Kwh", obj.Demanda+" Kw", obj.Cantidad);
+                add4lrrT(mes+" "+obj.Anio, (int)obj.Consumo+"", obj.Demanda+"", obj.Cantidad);
             }
             add("");
 
@@ -238,9 +242,10 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             if (!proforma.proforma.observacion.isEmpty()) {
                 add("Observaciones:");
                 if (proforma.proforma.observacion.contains("SU PROFORMA GENERA")){
-                    add(proforma.proforma.observacion.substring(0,27));
-                    add(proforma.proforma.observacion.substring(28,58));
-                    add(proforma.proforma.observacion.substring(59,proforma.proforma.observacion.length()));
+                    addc(proforma.proforma.observacion.substring(0,27));
+                    addc(proforma.proforma.observacion.substring(28,58));
+                    addc(proforma.proforma.observacion.substring(59,80));
+                    addc(proforma.proforma.observacion.substring(81,proforma.proforma.observacion.length()));
                 }else{
                     add(proforma.proforma.observacion);
                 }
@@ -258,7 +263,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             addc("Últimos consumos (Kwh)");
             line();
             add3lrr(proforma.consumos.get(0).Mes, proforma.consumos.get(1).Mes, proforma.consumos.get(2).Mes);
-            add3lrr(proforma.consumos.get(0).Consumo+"", proforma.consumos.get(1).Consumo+"", proforma.consumos.get(2).Consumo+"");
+            add3lrr((int)proforma.consumos.get(0).Consumo+"",(int)proforma.consumos.get(1).Consumo+"", (int)proforma.consumos.get(2).Consumo+"");
 
             save();
         } catch (Exception e) {

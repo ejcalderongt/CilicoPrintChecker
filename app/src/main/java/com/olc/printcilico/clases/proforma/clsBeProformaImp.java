@@ -15,4 +15,5 @@ public class clsBeProformaImp {
     public ArrayList<clsBeTmpProformaUs> pendientes = new ArrayList<>();
     public ArrayList<clsBeUltimo_consumo> consumos = new ArrayList<>();
     public String LecturaActual = "";
+    public String LecturaAnterior = "";
 }

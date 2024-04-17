@@ -197,7 +197,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     }
 
     public boolean saveProforma() {
-        String observacion="";
+        //String observacion="";
         try {
             //observacion = "SU PROFORMA GENERA ORDEN DE CORTE A PARTIR DEL 04/05/2024. Si ya realizó su pago, favor hacer caso omiso.";
 
@@ -258,6 +258,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 add(observacion.substring(58,observacion.length()));
                 add("");
             }*/
+            add(proforma.LecturaAnterior);
             add(proforma.LecturaActual);
             add("");
             addc("Últimos consumos (Kwh)");

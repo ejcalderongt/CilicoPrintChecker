@@ -22,7 +22,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:text="IMPRESIÓN 2.0"
+                android:text="IMPRESIÓN 2.1"
                 android:textColor="#ffffff"
                 android:textSize="25dip" />
 

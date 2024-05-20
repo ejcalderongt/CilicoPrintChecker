@@ -263,8 +263,19 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             add("");
             addc("Últimos consumos (Kwh)");
             line();
-            add3lrr(proforma.consumos.get(0).Mes, proforma.consumos.get(1).Mes, proforma.consumos.get(2).Mes);
-            add3lrr((int)proforma.consumos.get(0).Consumo+"",(int)proforma.consumos.get(1).Consumo+"", (int)proforma.consumos.get(2).Consumo+"");
+
+            if (proforma.consumos.size()>0){
+                if (proforma.consumos.size()==1){
+                    add3lrr(proforma.consumos.get(0).Mes, "", "");
+                    add3lrr((int)proforma.consumos.get(0).Consumo+"","0", "0");
+                }else if (proforma.consumos.size()==2) {
+                    add3lrr(proforma.consumos.get(0).Mes, proforma.consumos.get(1).Mes, "");
+                    add3lrr((int) proforma.consumos.get(0).Consumo + "", (int)proforma.consumos.get(1).Consumo+"", "0");
+                }else if (proforma.consumos.size()>2){
+                    add3lrr(proforma.consumos.get(0).Mes, proforma.consumos.get(1).Mes, proforma.consumos.get(2).Mes);
+                    add3lrr((int)proforma.consumos.get(0).Consumo+"",(int)proforma.consumos.get(1).Consumo+"", (int)proforma.consumos.get(2).Consumo+"");
+                }
+            }
 
             save();
         } catch (Exception e) {

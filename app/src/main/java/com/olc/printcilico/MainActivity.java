@@ -235,6 +235,12 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 }
 
             }
+
+            if (proforma.aporteInde > 0) {
+                add("- Aporte Social Inde + IVA");
+                addTotalNegativo(proforma.aporteInde);
+            }
+
             line();
             addtot("Monto total:", proforma.Total);
             add("");
@@ -475,6 +481,14 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         String sval;
 
         sval=cursym+decfrm.format(val);
+        ts=rtrim(""+sval,40);
+        items.add(ts);
+    }
+
+    public void addTotalNegativo(double val) {
+        String sval;
+
+        sval="-"+ cursym + decfrm.format(val);
         ts=rtrim(""+sval,40);
         items.add(ts);
     }

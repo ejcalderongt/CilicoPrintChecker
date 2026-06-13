@@ -16,4 +16,5 @@ public class clsBeProformaImp {
     public ArrayList<clsBeUltimo_consumo> consumos = new ArrayList<>();
     public String LecturaActual = "";
     public String LecturaAnterior = "";
+    public double aporteInde = 0;
 }

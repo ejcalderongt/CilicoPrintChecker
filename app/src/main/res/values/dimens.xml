@@ -5,8 +5,8 @@
         so do scale when draw, then leed height relativity increase
          (48-41=7) 7*1.16=8.12  8.12*8=64
             384+64=448  -->
-    <dimen name="paper_size_small">400px</dimen>
-    <dimen name="paper_content_size">384px</dimen>
+    <dimen name="paper_size_small">464px</dimen>
+    <dimen name="paper_content_size">464px</dimen>
     <dimen name="paper_space">8px</dimen>
     <dimen name="card_redius">6dip</dimen>
     <dimen name="card_elevation">8dip</dimen>

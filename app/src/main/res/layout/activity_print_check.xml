@@ -198,17 +198,18 @@
         android:id="@+id/lyt_setting"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_above="@+id/lyt_control"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="10dip"
-        android:layout_above="@+id/lyt_control">
+        android:orientation="horizontal"
+        android:visibility="gone">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="13dip"
+            android:text="@string/advance"
             android:textColor="#000000"
-            android:text="@string/advance" />
+            android:textSize="13dip" />
 
         <CheckBox
             android:id="@+id/cb_setting"
